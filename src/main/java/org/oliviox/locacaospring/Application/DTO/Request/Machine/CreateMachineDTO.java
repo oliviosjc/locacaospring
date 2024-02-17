@@ -1,4 +1,4 @@
-package org.oliviox.locacaospring.Application.DTO.Machine;
+package org.oliviox.locacaospring.Application.DTO.Request.Machine;
 
 import javax.validation.constraints.Size;
 import javax.validation.constraints.NotNull;

@@ -1,11 +1,11 @@
-package org.oliviox.locacaospring.Application.DTO.Response;
+package org.oliviox.locacaospring.Application.DTO.Response.Base;
 
 
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-public class ResponseDTO<T>
+public class ResponseBaseDTO<T>
 {
     public String message;
 
@@ -15,13 +15,13 @@ public class ResponseDTO<T>
 
     public T data;
 
-    public ResponseDTO(String message, HttpStatus statusCode, T data) {
+    public ResponseBaseDTO(String message, HttpStatus statusCode, T data) {
         this.message = message;
         this.statusCode = statusCode;
         this.data = data;
     }
 
-    public ResponseDTO(String message, HttpStatus statusCode)
+    public ResponseBaseDTO(String message, HttpStatus statusCode)
     {
         this.message = message;
         this.statusCode = statusCode;
@@ -29,7 +29,7 @@ public class ResponseDTO<T>
     }
 
 
-    public ResponseDTO()
+    public ResponseBaseDTO()
     {
 
     }

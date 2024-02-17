@@ -1,6 +1,7 @@
 package org.oliviox.locacaospring.Domain.Entities.Base;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @EntityListeners(BaseEntityInterceptor.class)
+@EqualsAndHashCode(of = "id")
 public class BaseEntity
 {
     @Id

@@ -1,7 +1,7 @@
 package org.oliviox.locacaospring.Core.Controllers;
 
-import org.oliviox.locacaospring.Application.DTO.Machine.CreateMachineDTO;
-import org.oliviox.locacaospring.Application.DTO.Response.ResponseDTO;
+import org.oliviox.locacaospring.Application.DTO.Request.Machine.CreateMachineDTO;
+import org.oliviox.locacaospring.Application.DTO.Response.Base.ResponseBaseDTO;
 import org.oliviox.locacaospring.Application.Services.Interfaces.IMachineService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,8 +24,8 @@ public class MachineController
     }
 
     @PostMapping("/create")
-    public ResponseEntity<CompletableFuture<ResponseDTO<UUID>>> createMachine(@RequestBody CreateMachineDTO dto) {
-        CompletableFuture<ResponseDTO<UUID>> futureResponse = machineService.create(dto);
+    public ResponseEntity<CompletableFuture<ResponseBaseDTO<UUID>>> createMachine(@RequestBody CreateMachineDTO dto) {
+        CompletableFuture<ResponseBaseDTO<UUID>> futureResponse = machineService.create(dto);
         return ResponseEntity.status(futureResponse.join().getStatusCode()).body(futureResponse);
     }
 }

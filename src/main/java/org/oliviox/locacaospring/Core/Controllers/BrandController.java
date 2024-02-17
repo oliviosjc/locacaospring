@@ -1,7 +1,7 @@
 package org.oliviox.locacaospring.Core.Controllers;
 
-import org.oliviox.locacaospring.Application.DTO.Brand.CreateBrandDTO;
-import org.oliviox.locacaospring.Application.DTO.Response.ResponseDTO;
+import org.oliviox.locacaospring.Application.DTO.Request.Brand.CreateBrandDTO;
+import org.oliviox.locacaospring.Application.DTO.Response.Base.ResponseBaseDTO;
 import org.oliviox.locacaospring.Application.Services.Interfaces.IBrandService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,9 +24,9 @@ public class BrandController
     }
 
     @PostMapping("/create")
-    public ResponseEntity<CompletableFuture<ResponseDTO<UUID>>> createBrand(@RequestBody CreateBrandDTO dto)
+    public ResponseEntity<CompletableFuture<ResponseBaseDTO<UUID>>> createBrand(@RequestBody CreateBrandDTO dto)
     {
-        CompletableFuture<ResponseDTO<UUID>> futureResponse = brandService.create(dto);
+        CompletableFuture<ResponseBaseDTO<UUID>> futureResponse = brandService.create(dto);
         return ResponseEntity.status(futureResponse.join().getStatusCode()).body(futureResponse);
     }
 }

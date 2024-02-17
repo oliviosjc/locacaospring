@@ -1,4 +1,4 @@
-package org.oliviox.locacaospring.Application.DTO.Brand;
+package org.oliviox.locacaospring.Application.DTO.Request.Brand;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

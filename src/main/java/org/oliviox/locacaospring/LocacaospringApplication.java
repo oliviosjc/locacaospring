@@ -6,9 +6,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @EnableAsync
-public class LocacaospringApplication {
+public class LocacaospringApplication
+{
 
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		SpringApplication.run(LocacaospringApplication.class, args);
 	}
 

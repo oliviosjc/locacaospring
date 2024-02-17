@@ -1,15 +1,19 @@
 package org.oliviox.locacaospring.Domain.Entities.Machine;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import lombok.*;
 import org.oliviox.locacaospring.Domain.Entities.Base.BaseEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "TB_MACHINEUNITS")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MachineUnit extends BaseEntity
 {
     @Column(name = "purchasePrice", precision = 10, scale = 2)
@@ -21,24 +25,4 @@ public class MachineUnit extends BaseEntity
     @ManyToOne
     @JoinColumn(name = "machineId")
     private Machine machine;
-
-    public void setPurchasePrice(BigDecimal purchasePrice)
-    {
-        this.purchasePrice = purchasePrice;
-    }
-
-    public BigDecimal getPurchasePrice()
-    {
-        return this.purchasePrice;
-    }
-
-    public void setPurchaseDate(LocalDate purchaseDate)
-    {
-        this.purchaseDate = purchaseDate;
-    }
-
-    public LocalDate getPurchaseDate()
-    {
-        return this.purchaseDate;
-    }
 }

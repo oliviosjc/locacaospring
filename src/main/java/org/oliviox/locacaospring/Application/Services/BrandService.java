@@ -1,7 +1,7 @@
 package org.oliviox.locacaospring.Application.Services;
 
-import org.oliviox.locacaospring.Application.DTO.Brand.CreateBrandDTO;
-import org.oliviox.locacaospring.Application.DTO.Response.ResponseDTO;
+import org.oliviox.locacaospring.Application.DTO.Request.Brand.CreateBrandDTO;
+import org.oliviox.locacaospring.Application.DTO.Response.Base.ResponseBaseDTO;
 import org.oliviox.locacaospring.Application.Services.Interfaces.IBrandService;
 import org.oliviox.locacaospring.Domain.Entities.Brand.Brand;
 import org.oliviox.locacaospring.Domain.Specifications.Base.BaseSpecification;
@@ -29,7 +29,7 @@ public class BrandService implements IBrandService
     @Override
     @Transactional
     @Async
-    public CompletableFuture<ResponseDTO<UUID>> create(@Valid CreateBrandDTO dto)
+    public CompletableFuture<ResponseBaseDTO<UUID>> create(@Valid CreateBrandDTO dto)
     {
         return CompletableFuture.supplyAsync(() ->
         {
@@ -37,10 +37,10 @@ public class BrandService implements IBrandService
             Iterable<Brand> brands = brandRepository.findAll(specification.resolve());
 
             if (brands.iterator().hasNext())
-                return new ResponseDTO<>("This brand already exists in the database with this name.", HttpStatus.BAD_REQUEST);
+                return new ResponseBaseDTO<>("This brand already exists in the database with this name.", HttpStatus.BAD_REQUEST);
 
             Brand brand = brandRepository.save( new Brand(dto.getName()));
-            return new ResponseDTO<>("Success", HttpStatus.CREATED, brand.getId());
+            return new ResponseBaseDTO<>("Success", HttpStatus.CREATED, brand.getId());
         });
     }
 }

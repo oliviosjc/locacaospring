@@ -35,6 +35,8 @@ public class SecurityConfig
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/brand/create").hasAuthority("master")
                         .requestMatchers(HttpMethod.POST, "/api/machine/create").hasAuthority("master")
+                        .requestMatchers(HttpMethod.POST, "/api/machineUnit/create").hasAuthority("master")
+                        .requestMatchers(HttpMethod.POST, "/api/machineUnitMaintenance/create").hasAuthority("master")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(this.securityFilter, UsernamePasswordAuthenticationFilter.class)

@@ -41,12 +41,12 @@ public class MachineUnitService implements IMachineUnitService
         return CompletableFuture.supplyAsync(() ->
         {
             User loggedUser = this.authorizationService.getLoggedUser();
-            Optional<Machine> optionalMachine = this.machineRepository.findById(dto.getMachineId());
+            Optional<Machine> optionalMachine = this.machineRepository.findById(dto.machineId);
             if (optionalMachine.isEmpty())
                 return new ResponseBaseDTO<>("This machine with this id was not found in the base.", HttpStatus.BAD_REQUEST, null);
 
             Machine machine = optionalMachine.get();
-            MachineUnit machineUnit = new MachineUnit(dto.getPurchasePrice(), dto.getPurchaseDate(), loggedUser);
+            MachineUnit machineUnit = new MachineUnit(dto.purchasePrice, dto.purchaseDate, loggedUser);
             machine.add(machineUnit);
             this.machineRepository.save(machine);
             return new ResponseBaseDTO<>("Success", HttpStatus.CREATED);

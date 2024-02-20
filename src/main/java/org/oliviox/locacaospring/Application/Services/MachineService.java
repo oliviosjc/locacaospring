@@ -44,18 +44,18 @@ public class MachineService implements IMachineService
         return CompletableFuture.supplyAsync(() ->
         {
             User loggedUser = this.authorizationService.getLoggedUser();
-            BaseSpecification<Machine> specification = new MachineByNameSpecification(dto.getName());
+            BaseSpecification<Machine> specification = new MachineByNameSpecification(dto.name);
             Iterable<Machine> machines = machineRepository.findAll(specification.resolve());
 
             if (machines.iterator().hasNext())
                 return new ResponseBaseDTO<>("This machine already exists in the database with this name.", HttpStatus.BAD_REQUEST, null);
 
-            UUID brandId = UUID.fromString(dto.getBrandId());
+            UUID brandId = UUID.fromString(dto.brandId);
             Optional<Brand> brand = brandRepository.findById(brandId);
             if (brand.isEmpty())
                 return new ResponseBaseDTO<>("This brand with this id was not found in the database.", HttpStatus.BAD_REQUEST, null);
 
-            Machine machine = machineRepository.save(new Machine(dto.getName(), brand.get(), loggedUser));
+            Machine machine = machineRepository.save(new Machine(dto.name, brand.get(), loggedUser));
             return new ResponseBaseDTO<>("Success", HttpStatus.CREATED, machine.getId());
         });
     }

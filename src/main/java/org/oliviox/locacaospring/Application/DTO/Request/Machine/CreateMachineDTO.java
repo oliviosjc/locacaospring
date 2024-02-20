@@ -10,9 +10,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
-@Getter
-@Setter
-@NoArgsConstructor
 public class CreateMachineDTO
 {
     @NotBlank(message = "The property name cannot be blank.")

@@ -2,6 +2,7 @@ package org.oliviox.locacaospring.Domain.Entities.Machine;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cascade;
 import org.oliviox.locacaospring.Domain.Entities.Base.BaseEntity;
 import org.oliviox.locacaospring.Domain.Entities.Brand.Brand;
@@ -18,8 +19,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Machine extends BaseEntity
-{
+public class Machine extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "brandId")
     private Brand brand;
@@ -28,7 +28,7 @@ public class Machine extends BaseEntity
     @JoinColumn(name = "userId")
     private User user;
 
-    @OneToMany(mappedBy = "machine", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "machine", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MachineUnit> machineUnits;
 
     @Column(name = "averagePurchasePrice", precision = 10, scale = 2, nullable = false)
@@ -43,8 +43,7 @@ public class Machine extends BaseEntity
     @Column(name = "unitsQuantity", nullable = false)
     private Integer unitsQuantity;
 
-    public Machine(String name, Brand brand, User user)
-    {
+    public Machine(String name, Brand brand, User user) {
         this.setName(name);
         this.setBrand(brand);
         this.setAverageMaintenanceCost(new BigDecimal(0));
@@ -54,16 +53,14 @@ public class Machine extends BaseEntity
         this.setUser(user);
     }
 
-    public void add(MachineUnit machineUnit)
-    {
+    public void add(MachineUnit machineUnit) {
         machineUnit.setMachine(this);
         this.machineUnits.add(machineUnit);
         this.unitsQuantity++;
         updateAverages();
     }
 
-    public void delete(MachineUnit machineUnit)
-    {
+    public void delete(MachineUnit machineUnit) {
         this.machineUnits.remove(machineUnit);
         this.unitsQuantity--;
         updateAverages();
@@ -74,10 +71,11 @@ public class Machine extends BaseEntity
         BigDecimal totalMaintenanceCost = BigDecimal.ZERO;
         BigDecimal totalMaintenanceDays = BigDecimal.ZERO;
 
-        for (MachineUnit unit : this.machineUnits) {
+        for (MachineUnit unit : this.machineUnits)
+        {
             totalPurchasePrice = totalPurchasePrice.add(unit.getPurchasePrice());
             totalMaintenanceCost = totalMaintenanceCost.add(unit.getAverageMaintenanceCost().multiply(BigDecimal.valueOf(unit.getMaintenancesQuantity())));
-            totalMaintenanceDays = totalMaintenanceDays.add(unit.getAverageMaintenanceDays());
+            totalMaintenanceDays = totalMaintenanceDays.add(unit.getAverageMaintenanceDays().multiply(BigDecimal.valueOf(unit.getMaintenancesQuantity())));
         }
 
         if (this.unitsQuantity > 0) {
@@ -93,30 +91,24 @@ public class Machine extends BaseEntity
         updateAverageMaintenanceCost(totalMaintenanceCost);
     }
 
-    public void handleMaintenanceAdded(BigDecimal totalMaintenanceCost)
-    {
+    public void handleMaintenanceAdded(BigDecimal totalMaintenanceCost) {
         this.updateAverageMaintenanceCost(totalMaintenanceCost);
     }
 
-    private void updateAverageMaintenanceCost(BigDecimal totalMaintenanceCost)
-    {
+    private void updateAverageMaintenanceCost(BigDecimal totalMaintenanceCost) {
         int totalMaintenanceQuantity = 0;
-        for (MachineUnit machineUnit : this.machineUnits)
-        {
+        for (MachineUnit machineUnit : this.machineUnits) {
             totalMaintenanceQuantity += machineUnit.getMaintenancesQuantity();
         }
 
         BigDecimal newAverageMaintenanceCost;
-        if (totalMaintenanceQuantity > 0)
-        {
+        if (totalMaintenanceQuantity > 0) {
             newAverageMaintenanceCost = totalMaintenanceCost.divide(BigDecimal.valueOf(totalMaintenanceQuantity), 2, RoundingMode.HALF_UP);
-        } else
-        {
+        } else {
             newAverageMaintenanceCost = BigDecimal.ZERO;
         }
 
-        if (!this.averageMaintenanceCost.equals(newAverageMaintenanceCost))
-        {
+        if (!this.averageMaintenanceCost.equals(newAverageMaintenanceCost)) {
             this.averageMaintenanceCost = newAverageMaintenanceCost;
         }
     }

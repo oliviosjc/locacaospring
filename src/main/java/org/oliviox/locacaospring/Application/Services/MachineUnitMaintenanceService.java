@@ -41,7 +41,7 @@ public class MachineUnitMaintenanceService implements IMachineUnitMaintenanceSer
         return CompletableFuture.supplyAsync(() ->
         {
             User loggedUser = authorizationService.getLoggedUser();
-            Optional<MachineUnit> optionalMachineUnit = this.machineUnitRepository.findById(dto.getMachineUnitId());
+            Optional<MachineUnit> optionalMachineUnit = this.machineUnitRepository.findById(dto.machineUnitId);
 
             if (optionalMachineUnit.isEmpty())
                 return new ResponseBaseDTO<>("This machine unit with this id was not found in the base.", HttpStatus.BAD_REQUEST, null);
@@ -50,7 +50,7 @@ public class MachineUnitMaintenanceService implements IMachineUnitMaintenanceSer
 
             MachineUnitMaintenance machineUnitMaintenance
                     = new MachineUnitMaintenance
-                    (dto.getValue(), dto.getEntryDate(), dto.getExitDate(), dto.getMaintenanceDescription(), loggedUser);
+                    (dto.value, dto.entryDate, dto.exitDate, dto.maintenanceDescription, loggedUser);
 
             machineUnit.add(machineUnitMaintenance);
             this.machineUnitRepository.save(machineUnit);

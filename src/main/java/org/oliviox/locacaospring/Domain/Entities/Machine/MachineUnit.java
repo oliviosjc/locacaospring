@@ -35,7 +35,7 @@ public class MachineUnit extends BaseEntity
     @JoinColumn(name = "machineId")
     private Machine machine;
 
-    @OneToMany(mappedBy = "machineUnit", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "machineUnit", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MachineUnitMaintenance> unitMaintenances;
 
     @Column(name = "maintenancesQuantity", nullable = false)
@@ -51,8 +51,10 @@ public class MachineUnit extends BaseEntity
         this.setPurchasePrice(purchasePrice);
         this.setPurchaseDate(purchaseDate);
         this.setAverageMaintenanceCost(new BigDecimal(0));
+        this.setAverageMaintenanceDays(new BigDecimal(0));
         this.setMaintenancesQuantity(0);
         this.user = user;
+        this.setName("");
     }
 
     public void add(MachineUnitMaintenance machineUnitMaintenance)

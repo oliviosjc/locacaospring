@@ -38,13 +38,13 @@ public class BrandService implements IBrandService
         return CompletableFuture.supplyAsync(() ->
         {
             User loggedUser = this.authorizationService.getLoggedUser();
-            BaseSpecification<Brand> specification = new BrandByNameSpecification(dto.getName());
+            BaseSpecification<Brand> specification = new BrandByNameSpecification(dto.name);
             Iterable<Brand> brands = brandRepository.findAll(specification.resolve());
 
             if (brands.iterator().hasNext())
                 return new ResponseBaseDTO<>("This brand already exists in the database with this name.", HttpStatus.BAD_REQUEST);
 
-            Brand brand = brandRepository.save( new Brand(dto.getName(), loggedUser));
+            Brand brand = brandRepository.save( new Brand(dto.name, loggedUser));
             return new ResponseBaseDTO<>("Success", HttpStatus.CREATED, brand.getId());
         });
     }

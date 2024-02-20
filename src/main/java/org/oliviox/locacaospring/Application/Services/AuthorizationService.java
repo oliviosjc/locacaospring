@@ -37,7 +37,8 @@ public class AuthorizationService implements IAuthorizationService
     @Override
     public String generateToken(User user)
     {
-        try {
+        try
+        {
             Algorithm algorithm = Algorithm.HMAC256(this.secretKey);
             return JWT.create()
                     .withIssuer("spring-api")

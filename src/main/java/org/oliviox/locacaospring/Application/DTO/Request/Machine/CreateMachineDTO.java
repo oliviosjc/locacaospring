@@ -1,9 +1,15 @@
 package org.oliviox.locacaospring.Application.DTO.Request.Machine;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.validation.constraints.Size;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.NotBlank;
+import java.util.UUID;
 
+@Getter
+@Setter
 public class CreateMachineDTO
 {
     @NotBlank(message = "The property name cannot be blank.")
@@ -12,21 +18,5 @@ public class CreateMachineDTO
     public String name;
 
     @NotNull(message = "The property brandId cannot be null.")
-    public Long brandId;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getBrandId() {
-        return brandId;
-    }
-
-    public void setBrandId(Long brandId) {
-        this.brandId = brandId;
-    }
+    public UUID brandId;
 }

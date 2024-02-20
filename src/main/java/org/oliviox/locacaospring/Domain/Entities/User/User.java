@@ -3,6 +3,7 @@ package org.oliviox.locacaospring.Domain.Entities.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.oliviox.locacaospring.Domain.Entities.Base.BaseEntity;
+import org.oliviox.locacaospring.Domain.Entities.Machine.Machine;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +34,9 @@ public class User extends BaseEntity implements UserDetails
 
     @Column(name = "role")
     private UserRole role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Machine> machines;
 
     public User(String login, String password, UserRole role)
     {

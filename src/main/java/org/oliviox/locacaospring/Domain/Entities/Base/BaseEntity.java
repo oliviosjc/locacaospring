@@ -23,13 +23,13 @@ public class BaseEntity
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "name", length = 255, unique = true)
+    @Column(name = "name", length = 255, unique = true, nullable = false)
     private String name;
 
-    @Column(name = "createdAt", updatable = false)
+    @Column(name = "createdAt", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updatedAt", updatable = false)
+    @Column(name = "updatedAt", updatable = false, nullable = false)
     private LocalDateTime updatedAt;
 
     public void setName(String name)

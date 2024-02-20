@@ -1,4 +1,4 @@
-package org.oliviox.locacaospring.Core.Config;
+package org.oliviox.locacaospring.Core.Security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

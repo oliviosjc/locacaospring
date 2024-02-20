@@ -33,7 +33,8 @@ public class MachineService implements IMachineService
     @Override
     @Transactional
     @Async
-    public CompletableFuture<ResponseBaseDTO<UUID>> create(@Valid CreateMachineDTO dto) {
+    public CompletableFuture<ResponseBaseDTO<UUID>> create(@Valid CreateMachineDTO dto)
+    {
         return CompletableFuture.supplyAsync(() ->
         {
             BaseSpecification<Machine> specification = new MachineByNameSpecification(dto.name);
@@ -42,7 +43,7 @@ public class MachineService implements IMachineService
             if (machines.iterator().hasNext())
                 return new ResponseBaseDTO<>("This machine already exists in the database with this name.", HttpStatus.BAD_REQUEST, null);
 
-            Optional<Brand> brand = brandRepository.findById(dto.brandId);
+            Optional<Brand> brand = brandRepository.findById(dto.getBrandId());
             if (brand.isEmpty())
                 return new ResponseBaseDTO<>("This brand with this id was not found in the database.", HttpStatus.BAD_REQUEST, null);
 

@@ -18,7 +18,7 @@ public class MachineByNameSpecification implements BaseSpecification<Machine>
     {
         return (root, query, criteriaBuilder) ->
         {
-            Expression<String> nameExpression = criteriaBuilder.upper(root.get("Name"));
+            Expression<String> nameExpression = criteriaBuilder.upper(root.get("name"));
             return criteriaBuilder.equal(nameExpression, this.name);
         };
     }

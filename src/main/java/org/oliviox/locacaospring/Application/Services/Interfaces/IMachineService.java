@@ -9,4 +9,5 @@ import java.util.concurrent.CompletableFuture;
 public interface IMachineService
 {
     CompletableFuture<ResponseBaseDTO<UUID>> create(CreateMachineDTO dto);
+    CompletableFuture<ResponseBaseDTO<UUID>> delete(UUID machineId);
 }

@@ -3,6 +3,7 @@ package org.oliviox.locacaospring.Domain.Entities.Machine;
 import jakarta.persistence.*;
 import lombok.*;
 import org.oliviox.locacaospring.Domain.Entities.Base.BaseEntity;
+import org.oliviox.locacaospring.Domain.Entities.User.User;
 import org.springframework.cglib.core.Local;
 
 import java.math.BigDecimal;
@@ -33,11 +34,20 @@ public class MachineUnitMaintenance extends BaseEntity
     @JoinColumn(name = "machineUnitId")
     private MachineUnit machineUnit;
 
-    public MachineUnitMaintenance(BigDecimal value, LocalDate entryDate, LocalDate exitDate, String maintenanceDescription)
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
+
+    public MachineUnitMaintenance(BigDecimal value,
+                                  LocalDate entryDate,
+                                  LocalDate exitDate,
+                                  String maintenanceDescription,
+                                  User user)
     {
         this.value = value;
         this.entryDate = entryDate;
         this.exitDate = exitDate;
         this.maintenanceDescription = maintenanceDescription;
+        this.user = user;
     }
 }

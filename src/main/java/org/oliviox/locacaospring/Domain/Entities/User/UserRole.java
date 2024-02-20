@@ -2,8 +2,7 @@ package org.oliviox.locacaospring.Domain.Entities.User;
 
 public enum UserRole
 {
-    MASTER("master"),
-    RENTAL_ADMIN("rental_admin");
+    MASTER("master");
 
     private String role;
 

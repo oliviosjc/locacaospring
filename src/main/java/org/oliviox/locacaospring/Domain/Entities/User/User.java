@@ -3,7 +3,10 @@ package org.oliviox.locacaospring.Domain.Entities.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.oliviox.locacaospring.Domain.Entities.Base.BaseEntity;
+import org.oliviox.locacaospring.Domain.Entities.Brand.Brand;
 import org.oliviox.locacaospring.Domain.Entities.Machine.Machine;
+import org.oliviox.locacaospring.Domain.Entities.Machine.MachineUnit;
+import org.oliviox.locacaospring.Domain.Entities.Machine.MachineUnitMaintenance;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +26,6 @@ public class User extends BaseEntity implements UserDetails
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Column(name = "login", unique = true)
@@ -38,18 +40,27 @@ public class User extends BaseEntity implements UserDetails
     @OneToMany(mappedBy = "user")
     private List<Machine> machines;
 
+    @OneToMany(mappedBy = "user")
+    private List<MachineUnit> machineUnits;
+
+    @OneToMany(mappedBy = "user")
+    private List<MachineUnitMaintenance> machineUnitMaintenances;
+
+    @OneToMany(mappedBy = "user")
+    private List<Brand> brands;
+
     public User(String login, String password, UserRole role)
     {
         this.login = login;
         this.password = password;
         this.role = role;
+        this.setName("");
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
     {
-        if(this.role == UserRole.MASTER) return List.of(new SimpleGrantedAuthority("master"), new SimpleGrantedAuthority("rental_admin"));
-        else return List.of(new SimpleGrantedAuthority("rental_admin"));
+        return List.of(new SimpleGrantedAuthority("master"));
     }
 
     @Override

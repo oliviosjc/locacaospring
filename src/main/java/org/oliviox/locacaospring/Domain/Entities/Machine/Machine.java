@@ -2,6 +2,7 @@ package org.oliviox.locacaospring.Domain.Entities.Machine;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.oliviox.locacaospring.Domain.Entities.Base.BaseEntity;
 import org.oliviox.locacaospring.Domain.Entities.Brand.Brand;
 import org.oliviox.locacaospring.Domain.Entities.User.User;
@@ -27,11 +28,11 @@ public class Machine extends BaseEntity
     @JoinColumn(name = "userId")
     private User user;
 
-    @OneToMany(mappedBy = "machine", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "machine", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MachineUnit> machineUnits;
 
     @Column(name = "averagePurchasePrice", precision = 10, scale = 2, nullable = false)
-    private BigDecimal averagePurchisePrice;
+    private BigDecimal averagePurchasePrice;
 
     @Column(name = "averageMaintenanceCosts", precision = 10, scale = 2, nullable = false)
     private BigDecimal averageMaintenanceCost;
@@ -42,13 +43,15 @@ public class Machine extends BaseEntity
     @Column(name = "unitsQuantity", nullable = false)
     private Integer unitsQuantity;
 
-    public Machine(String name, Brand brand)
+    public Machine(String name, Brand brand, User user)
     {
         this.setName(name);
         this.setBrand(brand);
         this.setAverageMaintenanceCost(new BigDecimal(0));
-        this.setAveragePurchisePrice(new BigDecimal(0));
+        this.setAveragePurchasePrice(new BigDecimal(0));
         this.setUnitsQuantity(0);
+        this.setAverageMaintenanceDays(new BigDecimal(0));
+        this.setUser(user);
     }
 
     public void add(MachineUnit machineUnit)
@@ -56,9 +59,38 @@ public class Machine extends BaseEntity
         machineUnit.setMachine(this);
         this.machineUnits.add(machineUnit);
         this.unitsQuantity++;
-        BigDecimal totalPurchasePrice = this.averagePurchisePrice.multiply(BigDecimal.valueOf(this.unitsQuantity - 1));
-        totalPurchasePrice = totalPurchasePrice.add(machineUnit.getPurchasePrice());
-        this.averagePurchisePrice = totalPurchasePrice.divide(BigDecimal.valueOf(this.unitsQuantity), 2, RoundingMode.HALF_UP);
+        updateAverages();
+    }
+
+    public void delete(MachineUnit machineUnit)
+    {
+        this.machineUnits.remove(machineUnit);
+        this.unitsQuantity--;
+        updateAverages();
+    }
+
+    private void updateAverages() {
+        BigDecimal totalPurchasePrice = BigDecimal.ZERO;
+        BigDecimal totalMaintenanceCost = BigDecimal.ZERO;
+        BigDecimal totalMaintenanceDays = BigDecimal.ZERO;
+
+        for (MachineUnit unit : this.machineUnits) {
+            totalPurchasePrice = totalPurchasePrice.add(unit.getPurchasePrice());
+            totalMaintenanceCost = totalMaintenanceCost.add(unit.getAverageMaintenanceCost().multiply(BigDecimal.valueOf(unit.getMaintenancesQuantity())));
+            totalMaintenanceDays = totalMaintenanceDays.add(unit.getAverageMaintenanceDays());
+        }
+
+        if (this.unitsQuantity > 0) {
+            this.averagePurchasePrice = totalPurchasePrice.divide(BigDecimal.valueOf(this.unitsQuantity), 2, RoundingMode.HALF_UP);
+            this.averageMaintenanceCost = totalMaintenanceCost.divide(BigDecimal.valueOf(this.unitsQuantity), 2, RoundingMode.HALF_UP);
+            this.averageMaintenanceDays = totalMaintenanceDays.divide(BigDecimal.valueOf(this.unitsQuantity), 2, RoundingMode.HALF_UP);
+        } else {
+            this.averagePurchasePrice = BigDecimal.ZERO;
+            this.averageMaintenanceCost = BigDecimal.ZERO;
+            this.averageMaintenanceDays = BigDecimal.ZERO;
+        }
+
+        updateAverageMaintenanceCost(totalMaintenanceCost);
     }
 
     public void handleMaintenanceAdded(BigDecimal totalMaintenanceCost)
@@ -89,4 +121,3 @@ public class Machine extends BaseEntity
         }
     }
 }
-

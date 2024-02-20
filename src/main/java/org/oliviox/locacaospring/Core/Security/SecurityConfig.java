@@ -33,8 +33,8 @@ public class SecurityConfig
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/brand/create").hasRole("rental_admin")
-                        .requestMatchers(HttpMethod.POST, "/api/machine/create").hasRole("rental_admin")
+                        .requestMatchers(HttpMethod.POST, "/api/brand/create").hasAuthority("master")
+                        .requestMatchers(HttpMethod.POST, "/api/machine/create").hasAuthority("master")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(this.securityFilter, UsernamePasswordAuthenticationFilter.class)

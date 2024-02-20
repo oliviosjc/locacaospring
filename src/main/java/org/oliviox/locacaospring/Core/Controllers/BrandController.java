@@ -26,7 +26,7 @@ public class BrandController
     @PostMapping("/create")
     public ResponseEntity<CompletableFuture<ResponseBaseDTO<UUID>>> createBrand(@RequestBody CreateBrandDTO dto)
     {
-        CompletableFuture<ResponseBaseDTO<UUID>> futureResponse = brandService.create(dto);
+        CompletableFuture<ResponseBaseDTO<UUID>> futureResponse = this.brandService.create(dto);
         return ResponseEntity.status(futureResponse.join().getStatusCode()).body(futureResponse);
     }
 }

@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.oliviox.locacaospring.Domain.Entities.User.User;
 import org.oliviox.locacaospring.Infraestructure.Interceptors.BaseEntityInterceptor;
 
 import java.time.LocalDateTime;
@@ -20,10 +21,9 @@ public class BaseEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "name", length = 255, unique = true, nullable = false)
+    @Column(name = "name", length = 255, unique = true, nullable = true)
     private String name;
 
     @Column(name = "createdAt", updatable = false, nullable = false)

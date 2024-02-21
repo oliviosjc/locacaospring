@@ -19,5 +19,5 @@ public class CreateMachineDTO
 
     @NotNull(message = "The property brandId cannot be null.")
     @NotEmpty(message = "The property brandId cannot be null.")
-    public String brandId;
+    public UUID brandId;
 }

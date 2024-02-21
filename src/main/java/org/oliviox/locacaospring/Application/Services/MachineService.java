@@ -50,8 +50,7 @@ public class MachineService implements IMachineService
             if (machines.iterator().hasNext())
                 return new ResponseBaseDTO<>("This machine already exists in the database with this name.", HttpStatus.BAD_REQUEST, null);
 
-            UUID brandId = UUID.fromString(dto.brandId);
-            Optional<Brand> brand = brandRepository.findById(brandId);
+            Optional<Brand> brand = brandRepository.findById(dto.brandId);
             if (brand.isEmpty())
                 return new ResponseBaseDTO<>("This brand with this id was not found in the database.", HttpStatus.BAD_REQUEST, null);
 

@@ -2,6 +2,8 @@
 
 Este é o repositório para o projeto locacaospring como forma de template para criação de aplicações web utilizando JAVA.
 
+Se atente em alterar o arquivo application.properties setando a url da sua base de dados corretamente!
+
 ## Descrição
 
 O projeto locacaospring é uma aplicação Spring Boot que fornece serviços para gerenciar locações de equipamentos.
@@ -23,7 +25,7 @@ Este projeto utiliza as seguintes dependências:
 
 Para executar o projeto localmente, você precisará do seguinte:
 
-- JDK 21
+- JDK 17
 - Maven
 - Banco de dados SQL Server
 

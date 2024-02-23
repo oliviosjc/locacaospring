@@ -3,6 +3,8 @@ package org.oliviox.locacaospring.Domain.Entities.Machine;
 import jakarta.persistence.*;
 import lombok.*;
 import org.oliviox.locacaospring.Domain.Entities.Base.BaseEntity;
+import org.oliviox.locacaospring.Domain.Entities.Contract.RentalContract;
+import org.oliviox.locacaospring.Domain.Entities.Contract.RentalContractMachineUnitHistory;
 import org.oliviox.locacaospring.Domain.Entities.User.User;
 
 import java.math.BigDecimal;
@@ -25,11 +27,14 @@ public class MachineUnit extends BaseEntity
     @Column(name = "purchaseDate")
     private LocalDate purchaseDate;
 
-    @Column(name = "averageMaintenanceCost", precision = 10, scale = 2, nullable = false)
-    private BigDecimal averageMaintenanceCost;
+    @Column(name = "averageCostsPerMaintenance", precision = 10, scale = 2, nullable = false)
+    private BigDecimal averageCostsPerMaintenance;
 
     @Column(name = "averageMaintenanceDays", precision = 10, scale = 2, nullable = false)
     private BigDecimal averageMaintenanceDays;
+
+    @Column(name = "amountCostsPerMaintenance", precision = 10, scale = 2, nullable = false)
+    private BigDecimal amountCostsPerMaintenance;
 
     @ManyToOne
     @JoinColumn(name = "machineId")
@@ -41,20 +46,42 @@ public class MachineUnit extends BaseEntity
     @Column(name = "maintenancesQuantity", nullable = false)
     private Integer maintenancesQuantity;
 
+    @Column(name = "externalIdentifier", unique = true, nullable = false, length = 255, columnDefinition = "VARCHAR(255) DEFAULT 'default_value'")
+    private String externalIdentifier;
+
+    @Column(name = "principalColor", nullable = true)
+    private String principalColor;
+
+    @Column(name = "secondaryColor", nullable = true)
+    private String secondaryColor;
+
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
 
-    public MachineUnit(BigDecimal purchasePrice, LocalDate purchaseDate, User user)
+    @OneToMany(mappedBy = "machineUnit", fetch = FetchType.LAZY)
+    private List<RentalContractMachineUnitHistory> rentalContractMachineUnitHistories;
+
+    public MachineUnit(BigDecimal purchasePrice,
+                       LocalDate purchaseDate,
+                       String externalIdentifier,
+                       String principalColor,
+                       String secondaryColor,
+                       String name,
+                       User user)
     {
+        this.setPrincipalColor(principalColor);
+        this.setSecondaryColor(secondaryColor);
         this.setMachine(machine);
         this.setPurchasePrice(purchasePrice);
         this.setPurchaseDate(purchaseDate);
-        this.setAverageMaintenanceCost(new BigDecimal(0));
+        this.setAverageCostsPerMaintenance(new BigDecimal(0));
         this.setAverageMaintenanceDays(new BigDecimal(0));
+        this.setAmountCostsPerMaintenance(new BigDecimal(0));
         this.setMaintenancesQuantity(0);
-        this.user = user;
-        this.setName("");
+        this.setUser(user);
+        this.setExternalIdentifier(externalIdentifier);
+        this.setName(name);
     }
 
     public void add(MachineUnitMaintenance machineUnitMaintenance)
@@ -62,17 +89,17 @@ public class MachineUnit extends BaseEntity
         machineUnitMaintenance.setMachineUnit(this);
         this.unitMaintenances.add(machineUnitMaintenance);
         this.maintenancesQuantity++;
-        updateAverages();
+        updateAveragesAndAmounts();
     }
 
     public void delete(MachineUnitMaintenance machineUnitMaintenance)
     {
         this.unitMaintenances.remove(machineUnitMaintenance);
         this.maintenancesQuantity--;
-        updateAverages();
+        updateAveragesAndAmounts();
     }
 
-    private void updateAverages()
+    private void updateAveragesAndAmounts()
     {
         BigDecimal totalMaintenanceCost = BigDecimal.ZERO;
         BigDecimal totalMaintenanceDays = BigDecimal.ZERO;
@@ -86,11 +113,13 @@ public class MachineUnit extends BaseEntity
 
         if (this.maintenancesQuantity > 0)
         {
-            this.averageMaintenanceCost = totalMaintenanceCost.divide(BigDecimal.valueOf(this.maintenancesQuantity), 2, RoundingMode.HALF_UP);
+            this.averageCostsPerMaintenance = totalMaintenanceCost.divide(BigDecimal.valueOf(this.maintenancesQuantity), 2, RoundingMode.HALF_UP);
+            this.amountCostsPerMaintenance = totalMaintenanceCost;
             this.averageMaintenanceDays = totalMaintenanceDays.divide(BigDecimal.valueOf(this.maintenancesQuantity), 2, RoundingMode.HALF_UP);
         } else
         {
-            this.averageMaintenanceCost = BigDecimal.ZERO;
+            this.amountCostsPerMaintenance = BigDecimal.ZERO;
+            this.averageCostsPerMaintenance = BigDecimal.ZERO;
             this.averageMaintenanceDays = BigDecimal.ZERO;
         }
 

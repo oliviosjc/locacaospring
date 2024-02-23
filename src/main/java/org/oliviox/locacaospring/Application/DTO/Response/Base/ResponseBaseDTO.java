@@ -1,10 +1,13 @@
 package org.oliviox.locacaospring.Application.DTO.Response.Base;
 
-
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+@Getter
+@Setter
 public class ResponseBaseDTO<T>
 {
     public String message;
@@ -34,32 +37,16 @@ public class ResponseBaseDTO<T>
 
     }
 
-    public String getMessage() {
-        return message;
-    }
-
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public HttpStatus getStatusCode() {
-        return statusCode;
     }
 
     public void setStatusCode(HttpStatus statusCode) {
         this.statusCode = statusCode;
     }
 
-    public List<String> getErrors() {
-        return errors;
-    }
-
     public void setErrors(List<String> errors) {
         this.errors = errors;
-    }
-
-    public T getData() {
-        return data;
     }
 
     public void setData(T data) {

@@ -21,13 +21,8 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = "id", callSuper = false)
 public class User extends BaseEntity implements UserDetails
 {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
-
     @Column(name = "login", unique = true)
     private String login;
 

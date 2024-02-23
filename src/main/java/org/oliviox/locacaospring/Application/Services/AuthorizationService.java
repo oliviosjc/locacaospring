@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import org.oliviox.locacaospring.Application.Services.Interfaces.IAuthorizationService;
 import org.oliviox.locacaospring.Domain.Entities.User.User;
 import org.oliviox.locacaospring.Infraestructure.Repositories.Interfaces.IUserRepository;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.UUID;
 
 @Service
 public class AuthorizationService implements IAuthorizationService

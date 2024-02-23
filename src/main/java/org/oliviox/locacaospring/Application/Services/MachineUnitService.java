@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -36,7 +35,7 @@ public class MachineUnitService implements IMachineUnitService
     @Override
     @Async
     @Transactional
-    public CompletableFuture<ResponseBaseDTO<UUID>> create(@Valid CreateMachineUnitDTO dto)
+    public CompletableFuture<ResponseBaseDTO<UUID>> create(CreateMachineUnitDTO dto)
     {
         return CompletableFuture.supplyAsync(() ->
         {
@@ -44,9 +43,18 @@ public class MachineUnitService implements IMachineUnitService
             Optional<Machine> optionalMachine = this.machineRepository.findById(dto.machineId);
             if (optionalMachine.isEmpty())
                 return new ResponseBaseDTO<>("This machine with this id was not found in the base.", HttpStatus.BAD_REQUEST, null);
-
             Machine machine = optionalMachine.get();
-            MachineUnit machineUnit = new MachineUnit(dto.purchasePrice, dto.purchaseDate, loggedUser);
+
+            MachineUnit machineUnit = this.machineUnitRepository.getMachineUnitByExternalIdentifier(dto.externalIdentifier);
+            if(machineUnit != null)
+            {
+                return new ResponseBaseDTO<>("This machine unit with this external identifier already exists in the base.", HttpStatus.BAD_REQUEST, null);
+            }
+
+            machineUnit = new MachineUnit
+                    (dto.purchasePrice, dto.purchaseDate, dto.externalIdentifier,
+                     dto.principalColor, dto.secondaryColor,"", loggedUser);
+
             machine.add(machineUnit);
             this.machineRepository.save(machine);
             return new ResponseBaseDTO<>("Success", HttpStatus.CREATED);

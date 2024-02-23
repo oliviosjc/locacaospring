@@ -13,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.validation.Valid;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -33,13 +31,13 @@ public class BrandService implements IBrandService
     @Override
     @Transactional
     @Async
-    public CompletableFuture<ResponseBaseDTO<UUID>> create(@Valid CreateBrandDTO dto)
+    public CompletableFuture<ResponseBaseDTO<UUID>> create(CreateBrandDTO dto)
     {
         return CompletableFuture.supplyAsync(() ->
         {
             User loggedUser = this.authorizationService.getLoggedUser();
             BaseSpecification<Brand> specification = new BrandByNameSpecification(dto.name);
-            Iterable<Brand> brands = brandRepository.findAll(specification.resolve());
+            Iterable<Brand> brands = this.brandRepository.findAll(specification.resolve());
 
             if (brands.iterator().hasNext())
                 return new ResponseBaseDTO<>("This brand already exists in the database with this name.", HttpStatus.BAD_REQUEST);

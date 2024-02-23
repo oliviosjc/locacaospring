@@ -14,7 +14,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -36,7 +35,7 @@ public class MachineUnitMaintenanceService implements IMachineUnitMaintenanceSer
     @Override
     @Async
     @Transactional
-    public CompletableFuture<ResponseBaseDTO<UUID>> create(@Valid CreateMachineUnitMaintenanceDTO dto)
+    public CompletableFuture<ResponseBaseDTO<UUID>> create(CreateMachineUnitMaintenanceDTO dto)
     {
         return CompletableFuture.supplyAsync(() ->
         {

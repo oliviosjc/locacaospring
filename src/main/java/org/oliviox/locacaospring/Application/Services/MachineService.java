@@ -6,17 +6,18 @@ import org.oliviox.locacaospring.Application.Services.Interfaces.IAuthorizationS
 import org.oliviox.locacaospring.Application.Services.Interfaces.IMachineService;
 import org.oliviox.locacaospring.Domain.Entities.Brand.Brand;
 import org.oliviox.locacaospring.Domain.Entities.Machine.Machine;
+import org.oliviox.locacaospring.Domain.Entities.Model.Model;
 import org.oliviox.locacaospring.Domain.Entities.User.User;
 import org.oliviox.locacaospring.Domain.Specifications.Base.BaseSpecification;
 import org.oliviox.locacaospring.Domain.Specifications.Machine.MachineByNameSpecification;
 import org.oliviox.locacaospring.Infraestructure.Repositories.Interfaces.IBrandRepository;
 import org.oliviox.locacaospring.Infraestructure.Repositories.Interfaces.IMachineRepository;
+import org.oliviox.locacaospring.Infraestructure.Repositories.Interfaces.IModelRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -27,19 +28,23 @@ public class MachineService implements IMachineService
     private final IMachineRepository machineRepository;
     private final IBrandRepository brandRepository;
     private final IAuthorizationService authorizationService;
+    private final IModelRepository modelRepository;
 
     public MachineService(IMachineRepository machineRepository,
-                          IBrandRepository brandRepository, IAuthorizationService authorizationService)
+                          IBrandRepository brandRepository,
+                          IAuthorizationService authorizationService,
+                          IModelRepository modelRepository)
     {
         this.machineRepository = machineRepository;
         this.brandRepository = brandRepository;
         this.authorizationService = authorizationService;
+        this.modelRepository = modelRepository;
     }
 
     @Override
     @Transactional
     @Async
-    public CompletableFuture<ResponseBaseDTO<UUID>> create(@Valid CreateMachineDTO dto)
+    public CompletableFuture<ResponseBaseDTO<UUID>> create(CreateMachineDTO dto)
     {
         return CompletableFuture.supplyAsync(() ->
         {
@@ -50,11 +55,15 @@ public class MachineService implements IMachineService
             if (machines.iterator().hasNext())
                 return new ResponseBaseDTO<>("This machine already exists in the database with this name.", HttpStatus.BAD_REQUEST, null);
 
-            Optional<Brand> brand = brandRepository.findById(dto.brandId);
+            Optional<Brand> brand = this.brandRepository.findById(dto.brandId);
             if (brand.isEmpty())
                 return new ResponseBaseDTO<>("This brand with this id was not found in the database.", HttpStatus.BAD_REQUEST, null);
 
-            Machine machine = machineRepository.save(new Machine(dto.name, brand.get(), loggedUser));
+            Optional<Model> model = this.modelRepository.findById(dto.modelId);
+            if (model.isEmpty())
+                return new ResponseBaseDTO<>("This model with this id was not found in the database.", HttpStatus.BAD_REQUEST, null);
+
+            Machine machine = this.machineRepository.save(new Machine(dto.name, brand.get(), loggedUser, model.get()));
             return new ResponseBaseDTO<>("Success", HttpStatus.CREATED, machine.getId());
         });
     }
